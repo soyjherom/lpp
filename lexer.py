@@ -1,5 +1,5 @@
 from re import match
-from lpp.token import(
+from token import(
     Token,
     TokenType,
     lookup_token_type
@@ -101,7 +101,7 @@ class Lexer:
         self._read_position += 1
 
     def _is_letter(self, character: str) -> bool:
-        return bool(match(r'^[a-záéíóúA-ZÀÈÌÒÙñÑ_]$', character))
+        return bool(match(r'^[a-záéíóúA-ZÀÈÌÒÙñÑ_\d]$', character))
 
     def _is_number(self, character: str) -> bool:
         return bool(match(r'^\d$', character))
