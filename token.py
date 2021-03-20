@@ -3,7 +3,8 @@ from enum import(
     Enum,
     unique
 )
-from typing import NamedTuple
+from typing import (
+    Dict, NamedTuple)
 @unique
 class TokenType(Enum):
     ASSIGN = auto()
@@ -26,3 +27,10 @@ class Token(NamedTuple):
     literal: str
     def __str__(self) -> str:
         return f'Type:{self.token_type}, Literal: {self.literal}'
+
+def lookup_token_type(literal: str) -> TokenType:
+    keywords: Dict[str, TokenType] = {
+        'variable': TokenType.LET,
+        'procedimiento': TokenType.FUNCTION
+    }
+    return keywords.get(literal, TokenType.IDENT)

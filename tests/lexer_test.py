@@ -20,3 +20,117 @@ class LexerTest(TestCase):
         ]
 
         self.assertEquals(tokens, expected_tokens)
+
+    def test_one_character_operator(self) -> None:
+        source: str = '=+'
+        lexer: Lexer = Lexer(source)
+        tokens: List[Token] = []
+        for i in range(len(source)):
+            tokens.append(lexer.next_token())
+        expected_tokens: List[Token] =[
+            Token(TokenType.ASSIGN, '='),
+            Token(TokenType.PLUS, '+')
+        ]
+        self.assertEquals(tokens, expected_tokens)
+
+    def test_eof(self) -> None:
+        source: str = '+'
+        lexer: Lexer = Lexer(source)
+        tokens: List[Token] = []
+        for i in range(len(source)+1):
+            tokens.append(lexer.next_token())
+        expected_tokens: List[Token] = [
+            Token(TokenType.PLUS, '+'),
+            Token(TokenType.EOF, '')
+        ]
+        self.assertEquals(tokens, expected_tokens)
+
+    def test_delimeters(self) -> None:
+        source: str = '(){},;'
+        lexer: Lexer = Lexer(source)
+        tokens: List[Token] = []
+        for i in range(len(source)+1):
+            tokens.append(lexer.next_token())
+        expected_tokens: List[Token] = [
+            Token(TokenType.LPAREN, '('),
+            Token(TokenType.RPAREN, ')'),
+            Token(TokenType.LBRACE, '{'),            
+            Token(TokenType.RBRACE, '}'),
+            Token(TokenType.COMMA, ','),
+            Token(TokenType.SEMICOLON, ';'),
+            Token(TokenType.EOF, '')
+        ]
+        self.assertEquals(tokens, expected_tokens)
+
+    def test_assignment(self) -> None:
+        source: str = 'variable cinco = 5;'
+        lexer: Lexer = Lexer(source)
+        tokens: List[Token] = []
+        for i in range(len(source)+1):
+            tokens.append(lexer.next_token())
+            #print(tokens[-1].token_type.name)
+            if tokens[-1].token_type.name == TokenType.EOF.name:
+                break
+        expected_tokens: List[Token] = [
+            Token(TokenType.LET, 'variable'),
+            Token(TokenType.IDENT, 'cinco'),
+            Token(TokenType.ASSIGN, '='),
+            Token(TokenType.INT, '5'),
+            Token(TokenType.SEMICOLON, ';'),
+            Token(TokenType.EOF, '')
+        ]
+        self.assertEquals(len(tokens), len(expected_tokens))
+        self.assertEquals(tokens, expected_tokens)
+
+    def test_function_declaration(self) -> None:
+        source: str = '''
+            variable suma = procedimiento(x, y){
+                x + y;
+            };
+        '''
+        lexer: Lexer = Lexer(source)
+        tokens: List[Token] = []
+        for i in range(16):
+            tokens.append(lexer.next_token())
+        expected_tokens: List[Token] = [
+            Token(TokenType.LET, 'variable'), #1
+            Token(TokenType.IDENT, 'suma'), #2
+            Token(TokenType.ASSIGN, '='), #3
+            Token(TokenType.FUNCTION, 'procedimiento'), #4
+            Token(TokenType.LPAREN, '('), #5
+            Token(TokenType.IDENT, 'x'), #6
+            Token(TokenType.COMMA, ','), #7
+            Token(TokenType.IDENT, 'y'), #8
+            Token(TokenType.RPAREN, ')'), #9
+            Token(TokenType.LBRACE, '{'), #10
+            Token(TokenType.IDENT, 'x'), #11
+            Token(TokenType.PLUS, '+'), #12
+            Token(TokenType.IDENT, 'y'), #13
+            Token(TokenType.SEMICOLON, ';'), #14
+            Token(TokenType.RBRACE, '}'), #15
+            Token(TokenType.SEMICOLON, ';'), #16
+        ]
+        self.assertEquals(len(tokens), len(expected_tokens))
+        self.assertEquals(tokens, expected_tokens)
+
+    def test_function_call(self) -> None:
+        source: str = 'variable resultado = suma(dos, tres);'
+        lexer: Lexer = Lexer(source)
+        tokens: List[Token] = []
+        for i in range(11):
+            tokens.append(lexer.next_token())
+        expected_tokens: List[Token] = [
+            Token(TokenType.LET, 'variable'),
+            Token(TokenType.IDENT, 'resultado'),
+            Token(TokenType.ASSIGN, '='),
+            Token(TokenType.IDENT, 'suma'),
+            Token(TokenType.LPAREN, '('),
+            Token(TokenType.IDENT, 'dos'),
+            Token(TokenType.COMMA, ','),
+            Token(TokenType.IDENT, 'tres'),
+            Token(TokenType.RPAREN, ')'),
+            Token(TokenType.SEMICOLON, ';'),
+            Token(TokenType.EOF, ''),
+        ]
+        self.assertEquals(len(tokens), len(expected_tokens))
+        self.assertEquals(tokens, expected_tokens)
