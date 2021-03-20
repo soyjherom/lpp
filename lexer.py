@@ -41,10 +41,22 @@ class Lexer:
             #print(token.literal + ":" +token.token_type.name)
             return token
         elif self._is_number(self._character):
-            number = self._read_number()
-            token = Token(TokenType.INT, number)
+            literal = self._read_number()
+            token = Token(TokenType.INT, literal)
             #print(token.literal + ":" +token.token_type.name)
             return token
+        elif match(r'^<$', self._character):
+            token = Token(TokenType.LT, self._character)
+        elif match(r'^-$', self._character):
+            token = Token(TokenType.MINUS, self._character)
+        elif match(r'^\*$', self._character):
+            token = Token(TokenType.MULT, self._character)
+        elif match(r'^/$', self._character):
+            token = Token(TokenType.DIV, self._character)
+        elif match(r'^%$', self._character):
+            token = Token(TokenType.MOD, self._character)
+        elif match(r'^>$', self._character):
+            token = Token(TokenType.GT, self._character)
         else:
             token = Token(TokenType.ILLEGAL, self._character)
         self._read_character()

@@ -22,14 +22,20 @@ class LexerTest(TestCase):
         self.assertEquals(tokens, expected_tokens)
 
     def test_one_character_operator(self) -> None:
-        source: str = '=+'
+        source: str = '=+-*/%<>'
         lexer: Lexer = Lexer(source)
         tokens: List[Token] = []
         for i in range(len(source)):
             tokens.append(lexer.next_token())
         expected_tokens: List[Token] =[
             Token(TokenType.ASSIGN, '='),
-            Token(TokenType.PLUS, '+')
+            Token(TokenType.PLUS, '+'),
+            Token(TokenType.MINUS, '-'),
+            Token(TokenType.MULT, '*'),
+            Token(TokenType.DIV, '/'),
+            Token(TokenType.MOD, '%'),
+            Token(TokenType.LT, '<'),
+            Token(TokenType.GT, '>')
         ]
         self.assertEquals(tokens, expected_tokens)
 
@@ -133,4 +139,38 @@ class LexerTest(TestCase):
             Token(TokenType.EOF, ''),
         ]
         self.assertEquals(len(tokens), len(expected_tokens))
+        self.assertEquals(tokens, expected_tokens)
+
+    def test_control_statement(self) -> None:
+        source: str = '''
+            si(15 < 10){
+                regresa verdadero;
+            }si_no{
+                regresa falso;
+            }
+        '''
+        lexer: Lexer = Lexer(source)
+        tokens: List[Token] = []
+        for i in range(18):
+            tokens.append(lexer.next_token())
+        expected_tokens: List[Token] =[
+            Token(TokenType.IF, 'si'), #1
+            Token(TokenType.LPAREN, '('), #2
+            Token(TokenType.INT, '15'), #3
+            Token(TokenType.LT, '<'), #4
+            Token(TokenType.INT, '10'), #5
+            Token(TokenType.RPAREN, ')'), #6
+            Token(TokenType.LBRACE, '{'), #7
+            Token(TokenType.RETURN, 'regresa'), #8
+            Token(TokenType.TRUE, 'verdadero'), #9
+            Token(TokenType.SEMICOLON, ';'), #10
+            Token(TokenType.RBRACE, '}'), #11
+            Token(TokenType.ELSE, 'si_no'), #12
+            Token(TokenType.LBRACE, '{'), #13
+            Token(TokenType.RETURN, 'regresa'), #14
+            Token(TokenType.FALSE, 'falso'), #15
+            Token(TokenType.SEMICOLON, ';'), #16
+            Token(TokenType.RBRACE, '}'), #17
+            Token(TokenType.EOF, '') #18
+        ]
         self.assertEquals(tokens, expected_tokens)
