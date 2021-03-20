@@ -6,7 +6,7 @@ from lpp.lexer import Lexer
 class LexerTest(TestCase):
 
     def test_ilegal(self) -> None:
-        source: str = '!¿@'
+        source: str = '¿@'
         lexer: Lexer = Lexer(source)
         tokens: List[Token] = []
 
@@ -14,7 +14,6 @@ class LexerTest(TestCase):
             tokens.append(lexer.next_token())
 
         expected_tokens: List[Token] = [
-            Token(TokenType.ILLEGAL, '!'),
             Token(TokenType.ILLEGAL, '¿'),
             Token(TokenType.ILLEGAL, '@')
         ]
@@ -22,7 +21,7 @@ class LexerTest(TestCase):
         self.assertEquals(tokens, expected_tokens)
 
     def test_one_character_operator(self) -> None:
-        source: str = '=+-*/%<>'
+        source: str = '=+-*/%<!>'
         lexer: Lexer = Lexer(source)
         tokens: List[Token] = []
         for i in range(len(source)):
@@ -35,7 +34,8 @@ class LexerTest(TestCase):
             Token(TokenType.DIV, '/'),
             Token(TokenType.MOD, '%'),
             Token(TokenType.LT, '<'),
-            Token(TokenType.GT, '>')
+            Token(TokenType.NOT, '!'),
+            Token(TokenType.GT, '>'),
         ]
         self.assertEquals(tokens, expected_tokens)
 
@@ -172,5 +172,25 @@ class LexerTest(TestCase):
             Token(TokenType.SEMICOLON, ';'), #16
             Token(TokenType.RBRACE, '}'), #17
             Token(TokenType.EOF, '') #18
+        ]
+        self.assertEquals(tokens, expected_tokens)
+
+    def test_two_characters_operators(self) -> None:
+        source: str='>=;<=;<>;=='
+        lexer: Lexer = Lexer(source)
+        tokens: List[Token] = []
+        for i in range(len(source)):
+            tokens.append(lexer.next_token())
+            if tokens[-1].token_type.name == TokenType.EOF.name:
+                break;
+        expected_tokens: List[Token] = [
+            Token(TokenType.GTET, '>='),
+            Token(TokenType.SEMICOLON, ';'),
+            Token(TokenType.LTET, '<='),
+            Token(TokenType.SEMICOLON, ';'),
+            Token(TokenType.DIFF, '<>'),
+            Token(TokenType.SEMICOLON, ';'),
+            Token(TokenType.ET, '=='),
+            Token(TokenType.EOF, '')
         ]
         self.assertEquals(tokens, expected_tokens)
