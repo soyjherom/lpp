@@ -61,3 +61,23 @@ class LexerTest(TestCase):
             Token(TokenType.EOF, '')
         ]
         self.assertEquals(tokens, expected_tokens)
+
+    def test_assignment(self) -> None:
+        source: str = 'variable cinco = 5;'
+        lexer: Lexer = Lexer(source)
+        tokens: List[Token] = []
+        for i in range(len(source)+1):
+            tokens.append(lexer.next_token())
+            #print(tokens[-1].token_type.name)
+            if tokens[-1].token_type.name == TokenType.EOF.name:
+                break
+        expected_tokens: List[Token] = [
+            Token(TokenType.LET, 'variable'),
+            Token(TokenType.IDENT, 'cinco'),
+            Token(TokenType.ASSIGN, '='),
+            Token(TokenType.INT, '5'),
+            Token(TokenType.SEMICOLON, ';'),
+            Token(TokenType.EOF, '')
+        ]
+        self.assertEquals(len(tokens), len(expected_tokens))
+        self.assertEquals(tokens, expected_tokens)
