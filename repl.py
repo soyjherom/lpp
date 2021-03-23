@@ -1,5 +1,5 @@
-from lexer import Lexer
-from token import(
+from lpp.lexer import Lexer
+from lpp.token import(
     Token, TokenType
 )
 EOF_TOKEN: Token = Token(TokenType.EOF,'')

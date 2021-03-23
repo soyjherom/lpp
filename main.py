@@ -1,4 +1,4 @@
-from repl import start_repl
+from lpp.repl import start_repl
 
 def main() -> None:
     print('Bienvenido al lenguaje de programación Platzi.')

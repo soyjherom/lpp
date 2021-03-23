@@ -1,5 +1,5 @@
 from re import match
-from token import(
+from lpp.token import(
     Token,
     TokenType,
     lookup_token_type
@@ -49,15 +49,15 @@ class Lexer:
             token = Token(TokenType.COMMA, self._character)
         elif match(r'^;$', self._character):
             token = Token(TokenType.SEMICOLON, self._character)
+        elif self._is_number(self._character):
+            literal = self._read_number()
+            token = Token(TokenType.INT, literal)
+            #print(token.literal + ":" +token.token_type.name)
+            return token
         elif self._is_letter(self._character):
             literal = self._read_identifier()
             token_type = lookup_token_type(literal)
             token = Token(token_type, literal)
-            #print(token.literal + ":" +token.token_type.name)
-            return token
-        elif self._is_number(self._character):
-            literal = self._read_number()
-            token = Token(TokenType.INT, literal)
             #print(token.literal + ":" +token.token_type.name)
             return token
         elif match(r'^-$', self._character):
